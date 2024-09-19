@@ -3,10 +3,10 @@ import { Document } from 'mongoose';
 
 @Schema()
 export class Note extends Document {
-  @Prop({ required: true })
+  @Prop()
   title: string;
 
-  @Prop({ required: true })
+  @Prop()
   content: string;
 
   @Prop({ required: true, default: Date.now })
