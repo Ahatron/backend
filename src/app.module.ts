@@ -2,18 +2,24 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
-// import { AuthModule } from './auth/auth.module';
-// import { NotesModule } from './notes/notes.module';
 import { AuthModule } from './auth/auth.module';
 import { NotesModule } from './notes/notes.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost/nest-notes-app'),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGODB_URI'),
+      }),
+    }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     AuthModule,
-    NotesModule, // Ваша строка подключения
-    // AuthModule,
-    // NotesModule,
+    NotesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
